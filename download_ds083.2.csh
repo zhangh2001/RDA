@@ -33,8 +33,9 @@ set OUT_HOME = /work/share/ac4sj3muo0/data/wrfinput
 
 # >>> Set dataset information
 set dataset = ds083.2
+set DATASET = d083002
 set format  = grib2
-set REMOTE_HOME = https://data.rda.ucar.edu/${dataset}/${format}
+set REMOTE_HOME = https://data-osdf.rda.ucar.edu/ncar/rda/${DATASET}/${format}
 
 # >>> Set start date and end date
 set year_start	= $argv[1]	# 2024
