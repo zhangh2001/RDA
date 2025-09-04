@@ -32,9 +32,9 @@ endif
 set OUT_HOME = /work/share/ac4sj3muo0/data/wrfinput
 
 # >>> Set dataset information
-set dataset = ds461.0
+set dataset = d461000
 set format  = little_r
-set REMOTE_HOME = https://data.rda.ucar.edu/${dataset}/${format}
+set REMOTE_HOME = https://data-osdf.rda.ucar.edu/ncar/rda/${dataset}/${format}
 
 # >>> Set start date and end date
 set year_start	= $argv[1]	# 2024
