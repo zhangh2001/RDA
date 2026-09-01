@@ -3,7 +3,7 @@
  # @Author       : ZHANG Hua (zhangh23@mails.tsinghua.edu.cn)
  # @Date         : 2026-08-31 22:19:32
  # @LastEditors  : ZHANG Hua (zhangh23@mails.tsinghua.edu.cn)
- # @LastEditTime : 2026-09-01 02:02:43
+ # @LastEditTime : 2026-09-01 09:59:45
  # @Description  : Download data from Geoscience Data Exchange (GDEX) through Globus Transfer Service (GridFTP)
  # @Usage        : ./download.sh <dataset_type> <start_year> <start_month> <start_day> <end_year> <end_month> <end_day>
  # 
@@ -14,16 +14,22 @@
 # Set download configuration
 # -----------------------------------------------------------------------------
 
-# Set the output directory
-OUTPUT_HOME="/work/share/ac4sj3muo0/data/wrfinput"
+# Set the config file path
+CONFIG_FILE="config"
 
-# Set the globus and globusconnectpersonal executable paths
-alias globus="/work/home/tsinghuazhangh/zhangh/software/install/apps/anaconda3/2023.07-2/bin/globus"
-alias globusconnectpersonal="/work/home/tsinghuazhangh/zhangh/software/install/apps/gcp/3.3.0/globusconnectpersonal"
+# Load configuration
+source "${CONFIG_FILE}"
+
+# Set the output directory
+OUTPUT_HOME="${outputHome}"
 
 # Set the source and destination globus collection IDs
 SRC_ID="c4e40965-a024-43d7-bef4-6010f3731b61"
-DST_ID="1e9cffed-a566-11f1-a476-0afff7074b21"
+DST_ID="${destinationID}"
+
+# Set the globus and globusconnectpersonal executable wrapper functions
+globus() { "${globusPath}" "$@"; }
+globusconnectpersonal() { "${globusConnectPersonalPath}" "$@"; }
 
 # Set the batch file path
 FILELIST_FILE="filelist.txt"
