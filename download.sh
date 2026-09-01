@@ -19,6 +19,10 @@ CONFIG_FILE="config"
 
 # Load configuration
 source "${CONFIG_FILE}"
+if [[ $? -ne 0 ]]; then
+    echo "Error: cannot load config file '${CONFIG_FILE}'"
+    return 1 2>/dev/null || exit 1
+fi
 
 # Set the output directory
 OUTPUT_HOME="${outputHome}"
@@ -186,6 +190,11 @@ batch_transfer() {
 # Note: build_file_paths must set SRC_FILE and DST_FILE
 # -----------------------------------------------------------------------------
 download() {
+    if [[ -z "${START_TIME}" ]]; then
+        echo "Error: download not initialized; check the date arguments"
+        return 1 2>/dev/null || exit 1
+    fi
+
     TOTAL_FILES=0
     > "${FILELIST_FILE}" # Overwrite the existing filelist
 
@@ -230,6 +239,10 @@ init_downloader() {
 # -----------------------------------------------------------------------------
 if [[ $# -eq 6 ]]; then
     init_downloader "$@"
+    if [[ $? -ne 0 ]]; then
+        echo "Error: initialization failed"
+        return 1 2>/dev/null || exit 1
+    fi
 fi
 
 # -----------------------------------------------------------------------------
