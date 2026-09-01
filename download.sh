@@ -38,6 +38,9 @@ globusconnectpersonal() { "${globusConnectPersonalPath}" "$@"; }
 # Set the batch file path
 FILELIST_FILE="filelist.txt"
 
+# Set the maximum days allowed (prevents accidental large downloads)
+MAX_DAY="${maximumDownloadDay}"
+
 # Set dataset type
 DATASET_TYPE=$1; shift # e.g., "ds461.0", "ds094.0", "ds083.2"
 
@@ -63,9 +66,6 @@ case ${DATASET_TYPE} in
         exit 1
         ;;
 esac
-
-# Maximum days allowed (prevents accidental large downloads)
-MAX_DAY=36
 
 # -----------------------------------------------------------------------------
 # Function: parse_date_args

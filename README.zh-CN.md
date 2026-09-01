@@ -117,6 +117,7 @@ globusconnectpersonal -stop
 | `destinationID` | Globus Collection Personal ID |
 | `globusPath` | globus 可执行文件的路径 |
 | `globusConnectPersonalPath` | globusconnectpersonal 可执行文件的路径 |
+| `maximumDownloadDay` | 单次运行最多下载的天数（默认 36） |
 
 示例：
 
@@ -125,6 +126,7 @@ outputHome=/work/share/ac4sj3muo0/data/wrfinput
 destinationID=xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx
 globusPath=/work/home/tsinghuazhangh/zhangh/software/install/apps/anaconda3/2023.07-2/bin/globus
 globusConnectPersonalPath=/work/home/tsinghuazhangh/zhangh/software/install/apps/gcp/globusconnectpersonal-3.3.0/globusconnectpersonal
+maximumDownloadDay=36
 ```
 
 ## 4. 使用 download.sh
@@ -154,7 +156,7 @@ globusConnectPersonalPath=/work/home/tsinghuazhangh/zhangh/software/install/apps
 
 ### 运行流程
 
-1. 解析并校验日期范围（单次最多 `MAX_DAY` 天，默认 36，可在脚本中调整）；
+1. 解析并校验日期范围（单次最多 `maximumDownloadDay` 天，在 config 文件中设置）；
 2. 按时间步长生成 `filelist.txt` 批处理清单；
 3. 启动 `globusconnectpersonal` 并等待连接就绪；
 4. 提交批量传输任务并等待完成；
@@ -164,7 +166,7 @@ globusConnectPersonalPath=/work/home/tsinghuazhangh/zhangh/software/install/apps
 
 - 数据源 `SRC_ID` 为 NSF NCAR GDEX Dataset Archive 的 ID，固定不变；
 - 目标端目录必须先写入 `~/.globusonline/lta/config-paths`；
-- 每次运行最多下载 `MAX_DAY` 天，防止误操作导致超大下载；
+- 每次运行最多下载 `maximumDownloadDay` 天（在 config 文件中设置），防止误操作导致超大下载；
 - 脚本依赖 bash 与 GNU coreutils 的 `date`（支持 `-d`/`-u` 选项）。
 
 ## 5. 诊断命令

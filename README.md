@@ -114,6 +114,7 @@ The script reads its settings from the `config` file in the same directory (the 
 | `destinationID` | Globus Collection Personal ID |
 | `globusPath` | Path to the globus executable |
 | `globusConnectPersonalPath` | Path to the globusconnectpersonal executable |
+| `maximumDownloadDay` | Maximum days per download run (default 36) |
 
 Example:
 
@@ -122,6 +123,7 @@ outputHome=/work/share/ac4sj3muo0/data/wrfinput
 destinationID=xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx
 globusPath=/work/home/tsinghuazhangh/zhangh/software/install/apps/anaconda3/2023.07-2/bin/globus
 globusConnectPersonalPath=/work/home/tsinghuazhangh/zhangh/software/install/apps/gcp/globusconnectpersonal-3.3.0/globusconnectpersonal
+maximumDownloadDay=36
 ```
 
 ## 4. Using download.sh
@@ -151,7 +153,7 @@ Where `YYYY` is the year, `MM` the month, `DD` the day, and `HH` the hour.
 
 ### Workflow
 
-1. Parse and validate the date range (at most `MAX_DAY` days per run, 36 by default, adjustable in the script);
+1. Parse and validate the date range (at most `maximumDownloadDay` days per run, set in the config file);
 2. Generate the `filelist.txt` batch list at the given time step;
 3. Start `globusconnectpersonal` and wait for the connection to come online;
 4. Submit the batch transfer and wait for it to finish;
@@ -161,7 +163,7 @@ Where `YYYY` is the year, `MM` the month, `DD` the day, and `HH` the hour.
 
 - The source `SRC_ID` is the fixed ID of the NSF NCAR GDEX Dataset Archive;
 - Destination directories must be listed in `~/.globusonline/lta/config-paths` first;
-- Each run downloads at most `MAX_DAY` days of data to prevent accidental huge downloads;
+- Each run downloads at most `maximumDownloadDay` days of data (set in the config file) to prevent accidental huge downloads;
 - The script requires bash and GNU coreutils `date` (with `-d`/`-u` support).
 
 ## 5. Diagnostics
