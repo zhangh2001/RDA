@@ -4,8 +4,26 @@ Batch download reanalysis data from the NSF NCAR Geoscience Data Exchange (GDEX)
 
 > 中文版: [README.zh-CN.md](README.zh-CN.md)
 
+## Why Globus Transfer Instead of HTTP?
+
+**Use Globus, not HTTP, when you have data to download in bulk.** For the datasets handled by this repo, Globus transfers average roughly **15 MB/s** on our setup (measured), and — more importantly — they hold that speed over long runs and finish unattended. Downloading the same data over HTTPS is typically slower, much more variable, and far more likely to stall partway through a large batch.
+
+| | Globus Transfer | HTTPS / HTTP download |
+| --- | --- | --- |
+| Throughput | GridFTP-style transfer over **multiple parallel data streams**, with performance parameters (concurrency, parallelism, TCP buffer sizes) **tuned automatically by Globus**; ~15 MB/s measured average here | One TCP connection per file; throughput collapses with latency and packet loss, and there is nothing to tune |
+| Reliability | Progress is monitored, correctness is validated, and a transfer **automatically resumes after a network or system outage** | A dropped connection or one failed request aborts that file; recovering means re-running the client by hand |
+| Large batches | An entire date range is submitted as **one task** of thousands of files, queued and staged server-side | One request per file, driven by a shell loop; a single hang can stall the whole batch, and nothing survives a disconnect |
+| Progress | `globus task show` / `globus task wait`, the [activity page](https://app.globus.org/activity), and email notification on completion | Whatever the client prints; no global view, no resumption |
+
+As Globus puts it, it is "a fast, secure, and reliable way to move MB's, TB's and even PB's of data": the service "tunes performance parameters, maintains security, monitors progress, and validates correctness" during a transfer, and "if a network or system involved in the transfer goes down, Globus automatically resumes the transfer when the component comes back online" ([Why Globus / Data Transfer](https://www.globus.org/data-transfer)). File data moves directly between the two endpoints — it never flows through Globus itself ([Globus FAQ](https://docs.globus.org/faq/globus-connect-endpoints/)).
+
+GDEX serves the same datasets over both HTTPS and Globus; this repository deliberately uses Globus, because the gap widens sharply as the number and total size of files grow.
+
+> Measured throughput depends on your network path, endpoint and file sizes. The ~15 MB/s figure is an average from our own runs of `download.sh`, and is reported here only as an order-of-magnitude reference.
+
 ## Table of Contents
 
+- [Why Globus Transfer Instead of HTTP?](#why-globus-transfer-instead-of-http)
 - [1. Dependencies](#1-dependencies)
 - [2. Installing Dependencies](#2-installing-dependencies)
   - [2.1 Install Globus Connect Personal](#21-install-globus-connect-personal)
@@ -162,6 +180,7 @@ Where `YYYY` is the year, `MM` the month, `DD` the day, and `HH` the hour.
 ### Notes
 
 - The source `SRC_ID` is the fixed ID of the NSF NCAR GDEX Dataset Archive;
+- Prefer Globus over HTTPS whenever you are pulling more than a handful of files — see [Why Globus Transfer Instead of HTTP?](#why-globus-transfer-instead-of-http);
 - Destination directories must be listed in `~/.globusonline/lta/config-paths` first;
 - Each run downloads at most `maximumDownloadDay` days of data (set in the config file) to prevent accidental huge downloads;
 - The script requires bash and GNU coreutils `date` (with `-d`/`-u` support).

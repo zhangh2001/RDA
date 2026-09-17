@@ -4,9 +4,27 @@
 
 > English version: [README.md](README.md)
 
+## 为什么用 Globus 而不是 HTTP 下载？
+
+**批量下载数据时请用 Globus，不要用 HTTP。** 以本仓库涉及的数据集为例，实测 Globus 传输**平均可达约 15 MB/s**；更重要的是，它能长时间稳定维持这个速度并自动跑完，而用 HTTPS 下载同样的数据通常更慢、速度波动更大，批量下载时更容易中途卡死。
+
+| | Globus Transfer | HTTPS / HTTP 下载 |
+| --- | --- | --- |
+| 传输速度 | 基于 GridFTP 式传输，使用**多条并行数据流**，并由 Globus **自动调优**并发度、并行度、TCP 缓冲区等性能参数；本机实测平均约 15 MB/s | 每个文件一条 TCP 连接，遇到高延迟与丢包时吞吐急剧下降，且无可调优手段 |
+| 稳定性 | 传输过程受监控、正确性有校验，网络或系统中断后**自动断点续传** | 连接中断或单个请求失败即导致该文件失败，只能手工重跑客户端 |
+| 批量下载 | 整个时间范围作为**一个任务**提交，成百上千个文件在服务端排队、分阶段传输 | 一个文件一个请求，靠 shell 循环驱动；一次卡住就可能拖垮整批，断线后无法恢复 |
+| 进度查看 | `globus task show` / `globus task wait`、[活动页面](https://app.globus.org/activity)，完成后邮件通知 | 只能看客户端输出，没有全局视图，也没有续传 |
+
+Globus 官方将其描述为"快速、安全、可靠地传输 MB、TB 乃至 PB 级数据"的服务：传输过程中由 Globus "调优性能参数、保障安全、监控进度并校验正确性"，并且"若传输涉及的某个网络或系统宕机，Globus 会在其恢复后自动继续传输"（[Why Globus / Data Transfer](https://www.globus.org/data-transfer)）。文件数据在两个端点之间直连传输，不经过 Globus 中转（[Globus FAQ](https://docs.globus.org/faq/globus-connect-endpoints/)）。
+
+GDEX 对同一批数据同时提供 HTTPS 与 Globus 两种方式，本仓库刻意选择 Globus——文件数量越多、总体积越大，两者的差距越明显。
+
+> 实测速度取决于网络链路、端点与文件大小。约 15 MB/s 为本仓库 `download.sh` 实际运行的平均值，仅作数量级参考。
+
 ## 目录
 
 - [GDEX 数据批量下载（Globus Transfer）](#gdex-数据批量下载globus-transfer)
+  - [为什么用 Globus 而不是 HTTP 下载？](#为什么用-globus-而不是-http-下载)
   - [目录](#目录)
   - [1. 依赖](#1-依赖)
   - [2. 安装依赖](#2-安装依赖)
@@ -165,6 +183,7 @@ maximumDownloadDay=36
 ### 注意事项
 
 - 数据源 `SRC_ID` 为 NSF NCAR GDEX Dataset Archive 的 ID，固定不变；
+- 只要需要下载的文件不止几个，就优先用 Globus 而不是 HTTPS，原因见[为什么用 Globus 而不是 HTTP 下载？](#为什么用-globus-而不是-http-下载)；
 - 目标端目录必须先写入 `~/.globusonline/lta/config-paths`；
 - 每次运行最多下载 `maximumDownloadDay` 天（在 config 文件中设置），防止误操作导致超大下载；
 - 脚本依赖 bash 与 GNU coreutils 的 `date`（支持 `-d`/`-u` 选项）。
