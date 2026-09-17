@@ -202,4 +202,6 @@ globus task show <TASK_ID>
 
 ## 6. 许可
 
-Copyright (c) 2026 ZHANG Hua, All Rights Reserved.
+本项目基于 [MIT 许可证](LICENSE) 开源：可自由使用、修改和再分发（含商业用途），只需保留版权声明与许可证原文。
+
+Copyright (c) 2026 ZHANG Hua

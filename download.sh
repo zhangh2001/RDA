@@ -7,7 +7,7 @@
  # @Description  : Download data from Geoscience Data Exchange (GDEX) through Globus Transfer Service (GridFTP)
  # @Usage        : ./download.sh <dataset_type> <start_year> <start_month> <start_day> <end_year> <end_month> <end_day>
  # 
- # Copyright (c) 2026 by ZHANG Hua, All Rights Reserved. 
+ # Copyright (c) 2026 ZHANG Hua, released under the MIT License (see LICENSE).
 ### 
 
 # -----------------------------------------------------------------------------

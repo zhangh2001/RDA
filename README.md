@@ -199,4 +199,6 @@ You can also monitor task activity at <https://app.globus.org/activity>.
 
 ## 6. License
 
-Copyright (c) 2026 ZHANG Hua, All Rights Reserved.
+Released under the [MIT License](LICENSE): free to use, modify and redistribute, including commercially, as long as the copyright notice and license text are kept.
+
+Copyright (c) 2026 ZHANG Hua
